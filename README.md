@@ -14,11 +14,9 @@
 ## Prerequisites
 
 *   Python 3.10+
-*   **Ollama** installed and running (`ollama serve`).
-*   The default model pulled:
-    ```bash
-    ollama pull qwen2.5:7b
-    ```
+*   **For Local Use**: [Ollama](https://ollama.com) installed and running.
+    *   Pull the default model: `ollama pull qwen2.5:7b`
+*   **For Cloud Use**: An API Key from Google, OpenAI, or Anthropic.
 
 ## Installation
 
@@ -28,23 +26,26 @@
     ```
 
 2.  **Environment Setup (For Cloud LLMs)**:
-    If you want to use **Google Gemini**, **OpenAI**, or **Anthropic** instead of local Ollama models:
+    If you plan to use cloud providers (Gemini, OpenAI, Anthropic), you need to set up your API keys.
     
-    *   Create a `.env` file in the root directory.
-    *   Add your API keys:
+    1.  Create a new file named `.env` in the project root folder (where `main.py` is).
+    2.  Open the file with a text editor (Notepad, VS Code, etc.).
+    3.  Paste your API keys in the following format:
         ```env
         # Google Gemini (Get key at aistudio.google.com)
-        GEMINI_API_KEY=your_key_here
+        GEMINI_API_KEY=your_actual_key_here
         
-        # OpenAI
-        OPENAI_API_KEY=sk-...
+        # OpenAI (platform.openai.com)
+        OPENAI_API_KEY=sk-proj-...
         
-        # Anthropic
+        # Anthropic (console.anthropic.com)
         ANTHROPIC_API_KEY=sk-ant-...
         ```
+    4.  Save the file.
 
-3.  **Verify Ollama (If using local)**:
-    Ensure `ollama` is installed and running (`ollama serve`).
+3.  **Verify Setup**:
+    *   **Local**: Run `ollama serve` in a separate terminal.
+    *   **Cloud**: Ensure your `.env` file is saved.
 
 ## Usage
 
