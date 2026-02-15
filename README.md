@@ -27,22 +27,48 @@
     pip install -r requirements.txt
     ```
 
-2.  **Environment Setup**:
-    Create a `.env` file (optional if using Ollama):
-    ```env
-    GEMINI_API_KEY=your_key
-    OPENAI_API_KEY=your_key
-    ANTHROPIC_API_KEY=your_key
-    ```
+2.  **Environment Setup (For Cloud LLMs)**:
+    If you want to use **Google Gemini**, **OpenAI**, or **Anthropic** instead of local Ollama models:
+    
+    *   Create a `.env` file in the root directory.
+    *   Add your API keys:
+        ```env
+        # Google Gemini (Get key at aistudio.google.com)
+        GEMINI_API_KEY=your_key_here
+        
+        # OpenAI
+        OPENAI_API_KEY=sk-...
+        
+        # Anthropic
+        ANTHROPIC_API_KEY=sk-ant-...
+        ```
+
+3.  **Verify Ollama (If using local)**:
+    Ensure `ollama` is installed and running (`ollama serve`).
 
 ## Usage
 
-### Basic Usage
+### Basic Usage (Local Ollama)
 The system defaults to `ollama` and `qwen2.5:7b`.
 
 ```bash
 # Search by Category Code
 python main.py --category cs.AI
+```
+
+### Cloud LLM Usage
+Once your `.env` is set up, use the `--provider` arg:
+
+```bash
+# Google Gemini (Recommended for speed/cost)
+python main.py --provider gemini --model gemini/gemini-2.0-flash --category "Black Holes" --days 30
+
+# OpenAI GPT-4o
+python main.py --provider openai --model gpt-4o --category "Robot Learning"
+
+# Anthropic Claude 3.5 Sonnet
+python main.py --provider anthropic --model claude-3-5-sonnet-20240620 --category "Interpretability"
+```
 
 # Search by Natural Language Term (Auto-mapped)
 python main.py --category "AI"                  # Maps to cs.AI
