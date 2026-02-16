@@ -1,0 +1,1259 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ArxivGnosis — Intelligent Research Discovery</title>
+    <meta name="description"
+        content="ArxivGnosis discovers, ranks, and summarizes academic papers using AI. Interactive research assistant powered by LLMs.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap"
+        rel="stylesheet">
+    <style>
+        /* ========================================= */
+        /*  DESIGN SYSTEM                            */
+        /* ========================================= */
+        :root {
+            --bg-primary: #0a0e1a;
+            --bg-secondary: #111827;
+            --bg-card: #1a1f35;
+            --bg-card-hover: #222845;
+            --bg-input: #0d1225;
+            --border-subtle: rgba(99, 102, 241, 0.15);
+            --border-focus: rgba(99, 102, 241, 0.5);
+            --border-glow: rgba(139, 92, 246, 0.3);
+
+            --text-primary: #e2e8f0;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+            --text-accent: #a78bfa;
+
+            --accent-primary: #6366f1;
+            --accent-secondary: #8b5cf6;
+            --accent-tertiary: #a78bfa;
+            --accent-success: #10b981;
+            --accent-warning: #f59e0b;
+            --accent-danger: #ef4444;
+            --accent-info: #06b6d4;
+
+            --gradient-brand: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #a78bfa 100%);
+            --gradient-glow: linear-gradient(135deg, rgba(99, 102, 241, .15), rgba(139, 92, 246, .08));
+            --gradient-card: linear-gradient(160deg, rgba(26, 31, 53, 0.9) 0%, rgba(17, 24, 39, 0.95) 100%);
+
+            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
+            --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.4);
+            --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.5);
+            --shadow-glow: 0 0 30px rgba(99, 102, 241, 0.15);
+
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+            --radius-pill: 9999px;
+
+            --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-base: 250ms cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-slow: 400ms cubic-bezier(0.4, 0, 0.2, 1);
+
+            --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+        }
+
+        /* ========================================= */
+        /*  RESET & BASE                             */
+        /* ========================================= */
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        body {
+            font-family: var(--font-sans);
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Ambient background grid */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background:
+                radial-gradient(ellipse 80% 60% at 50% 0%, rgba(99, 102, 241, 0.08) 0%, transparent 60%),
+                radial-gradient(ellipse 60% 40% at 80% 80%, rgba(139, 92, 246, 0.05) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* ========================================= */
+        /*  LAYOUT                                   */
+        /* ========================================= */
+        .app-container {
+            position: relative;
+            z-index: 1;
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 32px 24px 64px;
+        }
+
+        /* ========================================= */
+        /*  HEADER                                   */
+        /* ========================================= */
+        .app-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .app-header h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: var(--gradient-brand);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -0.03em;
+            margin-bottom: 8px;
+        }
+
+        .app-header .tagline {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            font-weight: 400;
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            margin-top: 12px;
+            padding: 4px 14px;
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.2);
+            border-radius: var(--radius-pill);
+            font-size: 0.75rem;
+            color: var(--accent-success);
+            font-weight: 500;
+        }
+
+        .status-badge .dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--accent-success);
+            animation: pulse-dot 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse-dot {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.4;
+            }
+        }
+
+        /* ========================================= */
+        /*  PARAMETER PANEL                          */
+        /* ========================================= */
+        .param-panel {
+            background: var(--gradient-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-lg);
+            padding: 28px;
+            margin-bottom: 32px;
+            box-shadow: var(--shadow-md);
+            backdrop-filter: blur(12px);
+        }
+
+        .param-panel-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 24px;
+        }
+
+        .param-panel-header h2 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .param-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 18px;
+        }
+
+        .param-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .param-group label {
+            font-size: 0.78rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .param-group input,
+        .param-group select {
+            background: var(--bg-input);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-sm);
+            padding: 10px 14px;
+            color: var(--text-primary);
+            font-family: var(--font-mono);
+            font-size: 0.88rem;
+            transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+            outline: none;
+        }
+
+        .param-group input:focus,
+        .param-group select:focus {
+            border-color: var(--border-focus);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.12);
+        }
+
+        .param-group select {
+            cursor: pointer;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            padding-right: 36px;
+        }
+
+        /* Wide span for category */
+        .param-group.wide {
+            grid-column: span 2;
+        }
+
+        /* ========================================= */
+        /*  BUTTONS                                  */
+        /* ========================================= */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 11px 24px;
+            border: none;
+            border-radius: var(--radius-sm);
+            font-family: var(--font-sans);
+            font-size: 0.88rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all var(--transition-base);
+            outline: none;
+            white-space: nowrap;
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .btn-primary {
+            background: var(--gradient-brand);
+            color: white;
+            box-shadow: 0 2px 12px rgba(99, 102, 241, 0.3);
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            box-shadow: 0 4px 20px rgba(99, 102, 241, 0.5);
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background: rgba(99, 102, 241, 0.1);
+            color: var(--accent-tertiary);
+            border: 1px solid var(--border-subtle);
+        }
+
+        .btn-secondary:hover:not(:disabled) {
+            background: rgba(99, 102, 241, 0.18);
+            border-color: var(--border-focus);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #059669, #10b981);
+            color: white;
+            box-shadow: 0 2px 12px rgba(16, 185, 129, 0.3);
+        }
+
+        .btn-success:hover:not(:disabled) {
+            box-shadow: 0 4px 20px rgba(16, 185, 129, 0.5);
+            transform: translateY(-1px);
+        }
+
+        .btn-danger {
+            background: rgba(239, 68, 68, 0.12);
+            color: #f87171;
+            border: 1px solid rgba(239, 68, 68, 0.2);
+        }
+
+        .btn-danger:hover:not(:disabled) {
+            background: rgba(239, 68, 68, 0.2);
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 12px;
+            margin-top: 24px;
+            flex-wrap: wrap;
+        }
+
+        /* ========================================= */
+        /*  LIVE LOG                                 */
+        /* ========================================= */
+        .live-log {
+            background: var(--bg-input);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-md);
+            padding: 16px;
+            margin-top: 20px;
+            max-height: 180px;
+            overflow-y: auto;
+            font-family: var(--font-mono);
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            line-height: 1.8;
+            display: none;
+        }
+
+        .live-log.visible {
+            display: block;
+        }
+
+        .live-log .log-line {
+            opacity: 0;
+            animation: fade-in 300ms ease forwards;
+        }
+
+        .live-log .log-line.info {
+            color: var(--accent-info);
+        }
+
+        .live-log .log-line.success {
+            color: var(--accent-success);
+        }
+
+        .live-log .log-line.warn {
+            color: var(--accent-warning);
+        }
+
+        .live-log .log-line.error {
+            color: var(--accent-danger);
+        }
+
+        @keyframes fade-in {
+            to {
+                opacity: 1;
+            }
+        }
+
+        /* ========================================= */
+        /*  RESULTS PANEL                            */
+        /* ========================================= */
+        .results-panel {
+            display: none;
+        }
+
+        .results-panel.visible {
+            display: block;
+        }
+
+        .results-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .results-header h2 {
+            font-size: 1.2rem;
+            font-weight: 700;
+        }
+
+        .results-meta {
+            font-size: 0.82rem;
+            color: var(--text-secondary);
+        }
+
+        /* ========================================= */
+        /*  PAPER CARDS                              */
+        /* ========================================= */
+        .paper-list {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .paper-card {
+            background: var(--gradient-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-md);
+            padding: 20px 24px;
+            transition: all var(--transition-base);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .paper-card::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background: var(--gradient-brand);
+            opacity: 0;
+            transition: opacity var(--transition-fast);
+        }
+
+        .paper-card:hover {
+            border-color: var(--border-focus);
+            box-shadow: var(--shadow-glow);
+        }
+
+        .paper-card:hover::before {
+            opacity: 1;
+        }
+
+        .paper-card.selected {
+            border-color: var(--accent-primary);
+            background: rgba(99, 102, 241, 0.06);
+        }
+
+        .paper-card.selected::before {
+            opacity: 1;
+        }
+
+        .paper-top-row {
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+        }
+
+        .paper-rank {
+            flex-shrink: 0;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(99, 102, 241, 0.1);
+            border-radius: var(--radius-sm);
+            font-weight: 700;
+            font-size: 0.88rem;
+            color: var(--accent-tertiary);
+        }
+
+        .paper-rank.gold {
+            background: rgba(245, 158, 11, 0.15);
+            color: #fbbf24;
+        }
+
+        .paper-rank.silver {
+            background: rgba(148, 163, 184, 0.12);
+            color: #cbd5e1;
+        }
+
+        .paper-rank.bronze {
+            background: rgba(217, 119, 6, 0.12);
+            color: #f59e0b;
+        }
+
+        .paper-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .paper-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+            line-height: 1.4;
+        }
+
+        .paper-meta {
+            display: flex;
+            gap: 16px;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+            flex-wrap: wrap;
+        }
+
+        .paper-meta span {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .paper-abstract {
+            font-size: 0.82rem;
+            color: var(--text-secondary);
+            line-height: 1.6;
+            margin-bottom: 12px;
+        }
+
+        .score-badge {
+            flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 8px 14px;
+            border-radius: var(--radius-sm);
+            min-width: 64px;
+        }
+
+        .score-badge .score-value {
+            font-size: 1.4rem;
+            font-weight: 800;
+            font-family: var(--font-mono);
+        }
+
+        .score-badge .score-label {
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            margin-top: 2px;
+        }
+
+        .score-badge.high {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--accent-success);
+        }
+
+        .score-badge.medium {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--accent-warning);
+        }
+
+        .score-badge.low {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--accent-danger);
+        }
+
+        /* Metrics grid */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .metric-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.72rem;
+            padding: 4px 8px;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 6px;
+        }
+
+        .metric-item .metric-name {
+            color: var(--text-muted);
+        }
+
+        .metric-item .metric-val {
+            font-weight: 600;
+            font-family: var(--font-mono);
+            color: var(--text-primary);
+        }
+
+        .paper-rationale {
+            font-size: 0.78rem;
+            color: var(--text-secondary);
+            font-style: italic;
+            margin-top: 8px;
+            padding-left: 12px;
+            border-left: 2px solid var(--border-subtle);
+        }
+
+        .paper-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+            align-items: center;
+        }
+
+        .paper-actions a {
+            font-size: 0.75rem;
+            color: var(--accent-info);
+            text-decoration: none;
+            padding: 4px 10px;
+            border: 1px solid rgba(6, 182, 212, 0.2);
+            border-radius: var(--radius-pill);
+            transition: all var(--transition-fast);
+        }
+
+        .paper-actions a:hover {
+            background: rgba(6, 182, 212, 0.1);
+        }
+
+        .checkbox-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .checkbox-wrapper input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: var(--accent-primary);
+            cursor: pointer;
+        }
+
+        /* ========================================= */
+        /*  ACTION BAR (sticky bottom)               */
+        /* ========================================= */
+        .action-bar {
+            display: none;
+            position: sticky;
+            bottom: 16px;
+            background: rgba(17, 24, 39, 0.95);
+            backdrop-filter: blur(16px);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-md);
+            padding: 14px 24px;
+            margin-top: 20px;
+            z-index: 100;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .action-bar.visible {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .action-bar .selection-info {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .action-bar .selection-info strong {
+            color: var(--accent-tertiary);
+        }
+
+        /* ========================================= */
+        /*  LOADING SPINNER                          */
+        /* ========================================= */
+        .spinner {
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Full-screen loader overlay */
+        .loading-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 1000;
+            background: rgba(10, 14, 26, 0.85);
+            backdrop-filter: blur(8px);
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .loading-overlay.visible {
+            display: flex;
+        }
+
+        .loading-overlay .big-spinner {
+            width: 48px;
+            height: 48px;
+            border: 3px solid rgba(99, 102, 241, 0.2);
+            border-top-color: var(--accent-primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        .loading-overlay .loading-text {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+        }
+
+        /* ========================================= */
+        /*  TOAST                                    */
+        /* ========================================= */
+        .toast-container {
+            position: fixed;
+            top: 24px;
+            right: 24px;
+            z-index: 2000;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .toast {
+            padding: 12px 20px;
+            border-radius: var(--radius-sm);
+            font-size: 0.85rem;
+            font-weight: 500;
+            animation: slide-in-toast 300ms ease forwards;
+            max-width: 380px;
+            box-shadow: var(--shadow-md);
+        }
+
+        .toast.success {
+            background: rgba(16, 185, 129, 0.15);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            color: var(--accent-success);
+        }
+
+        .toast.error {
+            background: rgba(239, 68, 68, 0.15);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: #f87171;
+        }
+
+        .toast.info {
+            background: rgba(6, 182, 212, 0.15);
+            border: 1px solid rgba(6, 182, 212, 0.3);
+            color: var(--accent-info);
+        }
+
+        @keyframes slide-in-toast {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        /* ========================================= */
+        /*  RESPONSIVE                               */
+        /* ========================================= */
+        @media (max-width: 768px) {
+            .app-header h1 {
+                font-size: 1.8rem;
+            }
+
+            .param-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .param-group.wide {
+                grid-column: span 1;
+            }
+
+            .paper-top-row {
+                flex-direction: column;
+            }
+
+            .metrics-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        /* ========================================= */
+        /*  SELECT ALL CHECKBOX                      */
+        /* ========================================= */
+        .select-all-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.82rem;
+            color: var(--text-secondary);
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="toast-container" id="toast-container"></div>
+
+    <div class="loading-overlay" id="loading-overlay">
+        <div class="big-spinner"></div>
+        <div class="loading-text" id="loading-text">Fetching & scoring papers…</div>
+    </div>
+
+    <div class="app-container">
+        <!-- HEADER -->
+        <header class="app-header">
+            <h1>ArxivGnosis 🏛️✨</h1>
+            <p class="tagline">Intelligent Research Discovery · LLM-Powered Ranking</p>
+            <div class="status-badge" id="status-badge">
+                <span class="dot"></span>
+                <span id="status-text">Ready</span>
+            </div>
+        </header>
+
+        <!-- PARAMETER PANEL -->
+        <section class="param-panel" id="param-panel">
+            <div class="param-panel-header">
+                <h2>⚙ Search Parameters</h2>
+            </div>
+
+            <div class="param-grid">
+                <div class="param-group wide">
+                    <label for="param-category">Category / Query</label>
+                    <input type="text" id="param-category" value="cs.AI"
+                        placeholder="cs.AI, Black Holes, Generative Models…">
+                </div>
+
+                <div class="param-group">
+                    <label for="param-days">Lookback (Days)</label>
+                    <input type="number" id="param-days" value="7" min="1" max="3650">
+                </div>
+
+                <div class="param-group">
+                    <label for="param-limit">Papers per Batch</label>
+                    <input type="number" id="param-limit" value="10" min="1" max="50">
+                </div>
+
+                <div class="param-group">
+                    <label for="param-source">Source</label>
+                    <select id="param-source">
+                        <option value="arxiv">Arxiv (Recent)</option>
+                        <option value="semanticscholar">Semantic Scholar (Cited)</option>
+                    </select>
+                </div>
+
+                <div class="param-group">
+                    <label for="param-order">Sort Order</label>
+                    <select id="param-order">
+                        <option value="ascending">Oldest First</option>
+                        <option value="descending">Newest First</option>
+                    </select>
+                </div>
+
+                <div class="param-group">
+                    <label for="param-provider">LLM Provider</label>
+                    <select id="param-provider">
+                        <option value="ollama">Ollama (Local)</option>
+                        <option value="gemini">Google Gemini</option>
+                        <option value="openai">OpenAI</option>
+                        <option value="anthropic">Anthropic</option>
+                    </select>
+                </div>
+
+                <div class="param-group wide">
+                    <label for="param-model">Model Name</label>
+                    <input type="text" id="param-model" value="ollama/qwen2.5:7b"
+                        placeholder="ollama/qwen2.5:7b, gemini/gemini-2.0-flash…">
+                </div>
+            </div>
+
+            <div class="btn-group">
+                <button class="btn btn-primary" id="btn-run" onclick="runFetch(false)">
+                    ▶ Run Search
+                </button>
+                <button class="btn btn-danger" id="btn-reset" onclick="resetSession()">
+                    ✕ Reset
+                </button>
+            </div>
+
+            <div class="live-log" id="live-log"></div>
+        </section>
+
+        <!-- RESULTS -->
+        <section class="results-panel" id="results-panel">
+            <div class="results-header">
+                <h2>📊 Ranked Papers</h2>
+                <span class="results-meta" id="results-meta"></span>
+                <div class="select-all-wrapper">
+                    <input type="checkbox" id="select-all-checkbox" onchange="toggleSelectAll(this.checked)">
+                    <label for="select-all-checkbox">Select All</label>
+                </div>
+            </div>
+
+            <div class="paper-list" id="paper-list"></div>
+        </section>
+
+        <!-- ACTION BAR -->
+        <div class="action-bar" id="action-bar">
+            <div class="selection-info">
+                <strong id="selection-count">0</strong> papers selected
+            </div>
+            <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                <button class="btn btn-success" id="btn-process" onclick="processSelected()">
+                    📥 Process Selected
+                </button>
+                <button class="btn btn-secondary" id="btn-iterate" onclick="runFetch(true)">
+                    ⟳ Iterate (Fetch More)
+                </button>
+                <button class="btn btn-danger" id="btn-quit" onclick="quitSession()">
+                    ■ Quit
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        /* ======================================================= */
+        /*  STATE                                                   */
+        /* ======================================================= */
+        const API_BASE = '';  // Same origin
+        let papers = [];
+        let selectedIndices = new Set();
+
+        /* ======================================================= */
+        /*  HELPERS                                                 */
+        /* ======================================================= */
+        function $(id) { return document.getElementById(id); }
+
+        function showToast(msg, type = 'info') {
+            const c = $('toast-container');
+            const el = document.createElement('div');
+            el.className = `toast ${type}`;
+            el.textContent = msg;
+            c.appendChild(el);
+            setTimeout(() => el.remove(), 4500);
+        }
+
+        function setLoading(on, text) {
+            const ov = $('loading-overlay');
+            if (on) {
+                $('loading-text').textContent = text || 'Processing…';
+                ov.classList.add('visible');
+            } else {
+                ov.classList.remove('visible');
+            }
+        }
+
+        function setStatus(text, color) {
+            $('status-text').textContent = text;
+            const dot = $('status-badge').querySelector('.dot');
+            if (color === 'success') dot.style.background = 'var(--accent-success)';
+            else if (color === 'warning') dot.style.background = 'var(--accent-warning)';
+            else if (color === 'error') dot.style.background = 'var(--accent-danger)';
+            else dot.style.background = 'var(--accent-info)';
+        }
+
+        function log(msg, type = '') {
+            const el = $('live-log');
+            el.classList.add('visible');
+            const line = document.createElement('div');
+            line.className = `log-line ${type}`;
+            const ts = new Date().toLocaleTimeString();
+            line.textContent = `[${ts}] ${msg}`;
+            el.appendChild(line);
+            el.scrollTop = el.scrollHeight;
+        }
+
+        function getParams() {
+            return {
+                category: $('param-category').value.trim() || 'cs.AI',
+                days: parseInt($('param-days').value) || 7,
+                limit: parseInt($('param-limit').value) || 10,
+                source: $('param-source').value,
+                order: $('param-order').value,
+                provider: $('param-provider').value,
+                model: $('param-model').value.trim(),
+            };
+        }
+
+        function scoreClass(score) {
+            if (score >= 70) return 'high';
+            if (score >= 40) return 'medium';
+            return 'low';
+        }
+
+        function rankClass(idx) {
+            if (idx === 0) return 'gold';
+            if (idx === 1) return 'silver';
+            if (idx === 2) return 'bronze';
+            return '';
+        }
+
+        /* ======================================================= */
+        /*  RENDER                                                  */
+        /* ======================================================= */
+        function renderPapers() {
+            const list = $('paper-list');
+            list.innerHTML = '';
+
+            papers.forEach((p, i) => {
+                const m = p.metrics;
+                const sc = scoreClass(m.total_score);
+                const rc = rankClass(i);
+                const isSelected = selectedIndices.has(i);
+
+                const card = document.createElement('div');
+                card.className = `paper-card ${isSelected ? 'selected' : ''}`;
+                card.dataset.index = i;
+                card.innerHTML = `
+                <div class="paper-top-row">
+                    <div class="paper-rank ${rc}">${i + 1}</div>
+                    <div class="paper-info">
+                        <div class="paper-title">${escapeHtml(p.title)}</div>
+                        <div class="paper-meta">
+                            <span>📅 ${p.published}</span>
+                            <span>📦 ${p.source}</span>
+                            ${p.citation_count > 0 ? `<span>📈 ${p.citation_count} impact</span>` : ''}
+                        </div>
+                        <div class="paper-abstract">${escapeHtml(p.summary)}</div>
+                        <div class="metrics-grid">
+                            ${metricItem('Breakthrough', m.breakthrough_potential)}
+                            ${metricItem('Utility', m.practical_utility)}
+                            ${metricItem('Impact', m.scientific_impact)}
+                            ${metricItem('Accessibility', m.layman_accessibility)}
+                            ${metricItem('Novelty', m.novelty)}
+                            ${metricItem('Interdisciplinary', m.interdisciplinary_potential)}
+                            ${metricItem('Code/Data', m.code_data_availability)}
+                            ${metricItem('Clarity', m.clarity_of_presentation)}
+                            ${metricItem('Social', m.social_relevance)}
+                            ${metricItem('Entertainment', m.entertainment_value)}
+                        </div>
+                        <div class="paper-rationale">${escapeHtml(m.rationale)}</div>
+                        <div class="paper-actions">
+                            ${p.pdf_url ? `<a href="${escapeHtml(p.pdf_url)}" target="_blank" rel="noopener">📄 PDF</a>` : ''}
+                            <a href="${escapeHtml(p.entry_id)}" target="_blank" rel="noopener">🔗 Source</a>
+                            <div class="checkbox-wrapper" style="margin-left:auto;">
+                                <input type="checkbox" id="chk-${i}" ${isSelected ? 'checked' : ''}
+                                    onchange="toggleSelect(${i}, this.checked)" onclick="event.stopPropagation()">
+                                <label for="chk-${i}" style="font-size:0.75rem;color:var(--text-muted);cursor:pointer;" onclick="event.stopPropagation()">Select</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="score-badge ${sc}">
+                        <span class="score-value">${m.total_score}</span>
+                        <span class="score-label">/ 100</span>
+                    </div>
+                </div>
+            `;
+
+                // Click card to toggle selection (except links/checkboxes)
+                card.addEventListener('click', (e) => {
+                    if (e.target.tagName === 'A' || e.target.tagName === 'INPUT' || e.target.tagName === 'LABEL') return;
+                    const chk = card.querySelector(`#chk-${i}`);
+                    chk.checked = !chk.checked;
+                    toggleSelect(i, chk.checked);
+                });
+
+                list.appendChild(card);
+            });
+
+            // Show results panel
+            $('results-panel').classList.add('visible');
+            $('results-meta').textContent = `${papers.length} papers in pool`;
+            updateActionBar();
+        }
+
+        function metricItem(name, val) {
+            const barColor = val >= 7 ? 'var(--accent-success)' : val >= 4 ? 'var(--accent-warning)' : 'var(--accent-danger)';
+            return `
+            <div class="metric-item">
+                <span class="metric-name">${name}</span>
+                <span class="metric-val" style="color:${barColor}">${val}</span>
+            </div>`;
+        }
+
+        function escapeHtml(str) {
+            const div = document.createElement('div');
+            div.textContent = str || '';
+            return div.innerHTML;
+        }
+
+        /* ======================================================= */
+        /*  SELECTION                                               */
+        /* ======================================================= */
+        function toggleSelect(idx, checked) {
+            if (checked) selectedIndices.add(idx);
+            else selectedIndices.delete(idx);
+
+            const card = document.querySelector(`.paper-card[data-index="${idx}"]`);
+            if (card) card.classList.toggle('selected', checked);
+            updateActionBar();
+        }
+
+        function toggleSelectAll(checked) {
+            papers.forEach((_, i) => {
+                if (checked) selectedIndices.add(i);
+                else selectedIndices.delete(i);
+            });
+            renderPapers();
+        }
+
+        function updateActionBar() {
+            const bar = $('action-bar');
+            $('selection-count').textContent = selectedIndices.size;
+            if (papers.length > 0) {
+                bar.classList.add('visible');
+            } else {
+                bar.classList.remove('visible');
+            }
+        }
+
+        /* ======================================================= */
+        /*  API CALLS                                               */
+        /* ======================================================= */
+        async function runFetch(iterate) {
+            const params = getParams();
+            params.iterate = iterate;
+
+            const action = iterate ? 'Iterating (next batch)…' : 'Fetching & scoring papers…';
+            setLoading(true, action);
+            setStatus(iterate ? 'Iterating…' : 'Fetching…', 'warning');
+            log(action, 'info');
+
+            $('btn-run').disabled = true;
+            $('btn-iterate').disabled = true;
+
+            try {
+                const resp = await fetch(`${API_BASE}/api/fetch`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(params),
+                });
+
+                const data = await resp.json();
+
+                if (!resp.ok) {
+                    throw new Error(data.error || 'Server error');
+                }
+
+                papers = data.papers || [];
+                selectedIndices.clear();
+
+                log(data.message || `Received ${papers.length} papers.`, 'success');
+                if (data.errors && data.errors.length > 0) {
+                    data.errors.forEach(e => log(e, 'warn'));
+                }
+
+                setStatus(`${papers.length} papers`, 'success');
+                renderPapers();
+                showToast(data.message, 'success');
+
+            } catch (err) {
+                log(`Error: ${err.message}`, 'error');
+                setStatus('Error', 'error');
+                showToast(err.message, 'error');
+            } finally {
+                setLoading(false);
+                $('btn-run').disabled = false;
+                $('btn-iterate').disabled = false;
+            }
+        }
+
+        async function processSelected() {
+            if (selectedIndices.size === 0) {
+                showToast('No papers selected.', 'error');
+                return;
+            }
+
+            const indices = [...selectedIndices].sort((a, b) => a - b);
+            setLoading(true, `Processing ${indices.length} selected papers…`);
+            setStatus('Processing…', 'warning');
+            log(`Processing papers: ${indices.map(i => i + 1).join(', ')}`, 'info');
+
+            try {
+                const resp = await fetch(`${API_BASE}/api/process`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ indices }),
+                });
+
+                const data = await resp.json();
+
+                if (!resp.ok) throw new Error(data.error || 'Process failed');
+
+                (data.results || []).forEach(r => {
+                    if (r.status === 'success') {
+                        log(`✓ Processed: ${r.title}`, 'success');
+                    } else {
+                        log(`✗ Failed: ${r.title || r.index} — ${r.message}`, 'error');
+                    }
+                });
+
+                setStatus('Done', 'success');
+                showToast(`Processed ${data.results.length} papers.`, 'success');
+
+            } catch (err) {
+                log(`Process error: ${err.message}`, 'error');
+                setStatus('Error', 'error');
+                showToast(err.message, 'error');
+            } finally {
+                setLoading(false);
+            }
+        }
+
+        async function resetSession() {
+            try {
+                await fetch(`${API_BASE}/api/reset`, { method: 'POST' });
+            } catch (_) { }
+
+            papers = [];
+            selectedIndices.clear();
+            $('results-panel').classList.remove('visible');
+            $('action-bar').classList.remove('visible');
+            $('live-log').innerHTML = '';
+            $('live-log').classList.remove('visible');
+            setStatus('Ready', 'success');
+            showToast('Session reset.', 'info');
+        }
+
+        function quitSession() {
+            resetSession();
+            showToast('Session ended. Configure new parameters to start again.', 'info');
+        }
+
+        /* ======================================================= */
+        /*  PROVIDER ↔ MODEL SYNC                                  */
+        /* ======================================================= */
+        const defaultModels = {
+            ollama: 'ollama/qwen2.5:7b',
+            gemini: 'gemini/gemini-2.0-flash',
+            openai: 'gpt-4o',
+            anthropic: 'claude-3-5-sonnet-20240620',
+        };
+
+        $('param-provider').addEventListener('change', function () {
+            $('param-model').value = defaultModels[this.value] || '';
+        });
+    </script>
+</body>
+
+</html>
