@@ -121,6 +121,33 @@ The **Total Score (0-100)** is the sum of 10 key metrics evaluated by the AI:
 *   `--min_score`: Minimum score threshold to stop fetching. If best paper < min_score, you can iterate to next batch.
 *   `--order`: Sort order for Arxiv (default: `ascending`). Use `descending` to see newest papers first.
 
+## 🌐 Web UI (Interactive Mode)
+
+ArxivGnosis ships with a full interactive web interface.
+
+### Launch
+```bash
+python server.py
+```
+Then open **http://localhost:5000** in your browser.
+
+### Architecture
+- **`server.py`** — Flask API wrapping existing modules into REST endpoints (`/api/fetch`, `/api/process`, `/api/reset`)
+- **`index.html`** — Premium single-file frontend (HTML + CSS + JS, no build step)
+
+### Web UI Workflow
+1. **Configure Parameters**: Set category, days, limit, source, LLM provider/model in the UI
+2. **Run Search**: Click ▶ to fetch & score papers via the backend
+3. **Review Results**: Papers are displayed ranked by total score with full metric breakdowns
+4. **Select Papers**: Click cards or checkboxes to select one or multiple papers
+5. **Iterate**: Click ⟳ to fetch the next batch without losing existing results
+6. **Process**: Click 📥 to download PDFs and generate LLM research summaries for selected papers
+7. **Quit**: Click ■ to reset the session
+
+*The backend runs all existing pipeline code (fetcher, semantic_fetcher, ranker, processor, llm_factory) as-is.*
+
+---
+
 ## Workflow for Content Creators
 
 1.  Run the agent to find and summarize a paper (or multiple papers).
