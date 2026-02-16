@@ -30,8 +30,8 @@ def fetch_semantic_papers(query: str, days: int = 365, max_results: int = 50, of
         # So we fetch a large enough pool (offset + max_results), sort them all, and then take the slice.
         # This is an approximation but works for "Next Batch".
         
-        pool_size = (max_results + offset) * 3
-        fetch_limit = min(pool_size, 300) # Cap at 300 to avoid timeouts
+        pool_size = (max_results + offset) * 6
+        fetch_limit = min(pool_size, 100) # Cap at 300 to avoid timeouts
         
         print(f"Querying Semantic Scholar for '{search_query}' (fetching up to {fetch_limit} candidates)...")
         
