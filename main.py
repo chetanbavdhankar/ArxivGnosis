@@ -17,18 +17,18 @@ logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 load_dotenv()
 
-def display_ranked_papers(scored_papers: List[tuple]):
+def display_ranked_papers(scored_papers: List[tuple], limit: int):
     """
     Displays the top-ranked papers with their scores and rationale.
     """
     print("\n" + "="*80)
-    print("RANKED PAPERS (Top 10)")
+    print(f"RANKED PAPERS (Top {limit})")
     print("="*80)
     
     scored_papers.sort(key=lambda x: x[1].total_score, reverse=True)
     
-    # We return top 10
-    top_papers = scored_papers[:10]
+    # We return top limit
+    top_papers = scored_papers[:limit]
     
     for idx, (paper, metrics) in enumerate(top_papers):
         pub_date = paper.published.strftime("%Y%m%d")
@@ -42,15 +42,16 @@ def display_ranked_papers(scored_papers: List[tuple]):
     return top_papers
 
 def fetch_and_score(args, llm_factory, offset):
-    print(f"\nFetching papers from {args.source} for query '{args.category}' within last {args.days} days (Offset: {offset})...")
+    fetch_limit = args.limit * 3
+    print(f"\nFetching up to {fetch_limit} candidates from {args.source} for query '{args.category}' within last {args.days} days (Offset: {offset})...")
     
     if args.source == "semanticscholar":
-        papers = fetch_semantic_papers(args.category, days=args.days, max_results=args.limit, offset=offset)
+        papers = fetch_semantic_papers(args.category, days=args.days, max_results=fetch_limit, offset=offset)
     else:
         if args.days > 60 and args.order == "descending":
             print("Note: 'arxiv' source may bias towards recent papers for long periods.")
             print("      Consider '--source semanticscholar' for impact-based ranking.")
-        papers = fetch_arxiv_papers(args.category, days=args.days, max_results=args.limit, offset=offset, sort_order=args.order)
+        papers = fetch_arxiv_papers(args.category, days=args.days, max_results=fetch_limit, offset=offset, sort_order=args.order)
     
     if not papers:
         print("No papers found in this batch.")
@@ -115,9 +116,9 @@ def main():
         
         if args.min_score > 0 and top_score < args.min_score:
             print(f"\nTop score found so far ({top_score}) is below minimum threshold ({args.min_score}).")
-            choice = input(f"Iterate to next batch of {args.limit} papers? (y/n) [y]: ").strip().lower()
+            choice = input(f"Iterate to next batch of {args.limit * 3} candidates? (y/n) [y]: ").strip().lower()
             if choice == '' or choice == 'y':
-                offset += args.limit
+                offset += args.limit * 3
                 continue
             else:
                 print("Selecting from existing papers regardless of score.")
@@ -135,7 +136,7 @@ def main():
             return
 
         # Display Top N from ALL accumulated papers
-        top_papers = display_ranked_papers(all_scored_papers)
+        top_papers = display_ranked_papers(all_scored_papers, args.limit)
             
         try:
             selection = input("\nEnter paper numbers (e.g., '1', '1-3'), 'i' to iterate (fetch more), or 'q' to quit: ")
@@ -144,7 +145,7 @@ def main():
                 break
             
             if selection.lower() == 'i':
-                offset += args.limit
+                offset += args.limit * 3
                 batch = fetch_and_score(args, llm_factory, offset)
                 if batch:
                     all_scored_papers.extend(batch)

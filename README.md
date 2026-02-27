@@ -157,3 +157,14 @@ Then open **http://localhost:5000** in your browser.
     *   **Core Innovation**: Simplified explanation of the "Aha!" moment.
     *   **Analogies & Visuals**: Ideas for graphics/animations.
 4.  (Optional) Use this structure to film your video or write a blog post.
+
+## Recent Changes
+
+*   **Fixed ArXiv `--days` query logic**:
+    *   **Why**: ArXiv API uses submission dates ("published"/"updated") which can lag behind announcement dates by 1-4 days (especially over weekends). Querying with `--days 1` on Monday yielded 0 results.
+    *   **How**: Added a dynamic `delay_buffer` (4 days) to the `start_date` calculation in `fetcher.py` and `semantic_fetcher.py` when `days < 30`.
+    *   **Impact**: Ensures recent papers correctly appear in short lookback windows without breaking long-term historical searches.
+
+## Technical Debt Log
+*   **ArXiv Search Pagination**: The API's native offset handling via generator is inefficient for large offsets. A custom direct pagination method or improved heuristic pre-filtering should be considered.
+*   **Semantic Scholar Date Handling**: Currently relying on general year searches and local filtering for exact dates. A more precise date mechanism via Semantic Scholar's advanced search syntax could optimize API usage.

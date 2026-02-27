@@ -144,8 +144,12 @@ def fetch_arxiv_papers(category: str, days: int = 7, max_results: int = 50, offs
     category_code = CategoryMapper.get_code(category)
     
     # Calculate date range
+    # ArXiv announcements made today typically have submission dates (published/updated) 
+    # from 1 to 4 days ago (especially over weekends). We add a 4-day buffer to the filter 
+    # to ensure we don't drop the latest "1 day" batch.
+    delay_buffer = 4 if days < 30 else 0
     today = datetime.datetime.now(datetime.timezone.utc)
-    start_date = today - datetime.timedelta(days=days)
+    start_date = today - datetime.timedelta(days=days + delay_buffer)
     
     # Construct query
     
@@ -200,7 +204,7 @@ def fetch_arxiv_papers(category: str, days: int = 7, max_results: int = 50, offs
     api_sort_order = arxiv.SortOrder.Descending
 
     # Heuristic: Fetch more papers to filter for impact
-    fetch_multiplier = 3
+    fetch_multiplier = 1 if sort_order.lower() == "descending" else 3
     fetch_limit = min((max_results + offset) * fetch_multiplier, 300)
     
     search = arxiv.Search(
@@ -267,8 +271,9 @@ def fetch_arxiv_papers(category: str, days: int = 7, max_results: int = 50, offs
         logger.error(f"Error fetching from Arxiv: {e}")
         print(f"Error fetching papers: {e}")
 
-    # Local Sort by Heuristic Score
-    candidates.sort(key=lambda x: x.citation_count, reverse=True)
+    # Local Sort by Heuristic Score if not Newest First
+    if sort_order.lower() != "descending":
+        candidates.sort(key=lambda x: x.citation_count, reverse=True)
     
     # Select the top candidates based on offset/limit logic
     final_results = candidates[offset : offset + max_results]

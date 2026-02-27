@@ -1,0 +1,28 @@
+# 1. The "One-Liner" Hook
+Inspectorch is a groundbreaking framework that efficiently identifies rare and unusual events in solar observations, making it easier to focus on the most critical and physically relevant phenomena.
+
+# 2. The Core Problem
+Traditional machine learning methods are designed to find common patterns and trends within vast datasets, which often leads to overlooking low-frequency but significant events like small-scale reconnection events or sudden Doppler shifts. These rare events are crucial for understanding solar dynamics, yet they are challenging to detect due to their infrequent occurrence in large-scale observational data.
+
+# 3. The Solution / Innovation
+Inspectorch introduces an innovative approach using flow-based models to address this problem. This framework is specifically designed to identify rare and unusual events within multidimensional solar observations by estimating the probability density function of the dataset. By focusing on these anomalies, Inspectorch ensures that computational resources are allocated more effectively, allowing for a deeper analysis of the most informative samples.
+
+# 4. How It Works (Simplified)
+1. **Data Preparation**: The framework begins with preparing the multidimensional solar observation data, which includes various types of spectral and imaging data from different telescopes.
+2. **Model Training**: Inspectorch trains flow-based models on this prepared data to learn the underlying distribution of normal observations. Flow-based models are a type of neural network that can effectively estimate complex probability distributions over high-dimensional spaces without requiring labeled data.
+3. **Anomaly Detection**: Once trained, the model assigns a probability score to each sample based on how likely it is to belong to the learned distribution. Samples with lower scores are flagged as potential anomalies, allowing researchers to focus their analysis on these critical events.
+
+# 5. Key Results & Impact
+Inspectorch significantly improves the detection of rare events in solar observations by consistently identifying unusual features such as strong Doppler shifts and uncommon broadening profiles. This capability not only enhances our understanding of small-scale reconnection events but also optimizes computational resources, making the analysis of large datasets more efficient and effective.
+
+# 6. Analogies & Visual Ideas
+- **Analogy**: Imagine you're looking for a needle in a haystack; traditional methods might sift through the entire haystack to find one or two needles, while Inspectorch is like using a magnet that can quickly identify all the iron filings, making your search much faster and more effective.
+  
+- **Visual Concept**: Create an animation showing how a vast solar dataset is initially overwhelming but gradually narrows down as rare events are highlighted. Use different colors to represent normal vs. anomalous data points, with Inspectorch guiding the viewer through the process of filtering out the noise.
+
+# 7. Technical Keywords
+1. Flow-based Models: Neural networks capable of estimating complex probability distributions.
+2. Unsupervised Learning: Methods that do not rely on labeled data for training.
+3. Density Estimation: The process of estimating the underlying distribution from which a dataset is sampled.
+4. Probabilistic Anomaly Scores: Quantitative measures assigned by Inspectorch to indicate how unusual each sample is.
+5. Solar Telescopes: Instruments like Hinode, SDO, and Solar Orbiter that capture detailed observations of the Sun.

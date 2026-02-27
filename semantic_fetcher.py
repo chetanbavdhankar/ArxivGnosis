@@ -16,7 +16,8 @@ def fetch_semantic_papers(query: str, days: int = 365, max_results: int = 50, of
     # Calculate year range string (e.g., "2024-2025")
     today = datetime.now(timezone.utc)
     current_year = today.year
-    start_date = today - timedelta(days=days)
+    delay_buffer = 4 if days < 30 else 0
+    start_date = today - timedelta(days=days + delay_buffer)
     start_year = start_date.year
     
     year_range = f"{start_year}-{current_year}"

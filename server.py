@@ -106,11 +106,12 @@ def api_fetch():
             offset = 0
 
     # Fetch papers
+    fetch_limit = limit * 3
     try:
         if source == "semanticscholar":
-            papers = fetch_semantic_papers(category, days=days, max_results=limit, offset=offset)
+            papers = fetch_semantic_papers(category, days=days, max_results=fetch_limit, offset=offset)
         else:
-            papers = fetch_arxiv_papers(category, days=days, max_results=limit, offset=offset, sort_order=order)
+            papers = fetch_arxiv_papers(category, days=days, max_results=fetch_limit, offset=offset, sort_order=order)
     except Exception as e:
         return jsonify({"error": f"Fetch error: {e}"}), 500
 
@@ -137,10 +138,12 @@ def api_fetch():
         state["all_scored_papers"].extend(scored_batch)
         # Re-sort globally by total_score desc
         state["all_scored_papers"].sort(key=lambda x: x["metrics"]["total_score"], reverse=True)
+        # Keep only the top 'limit'
+        state["all_scored_papers"] = state["all_scored_papers"][:limit]
         # Re-index
         for i, p in enumerate(state["all_scored_papers"]):
             p["index"] = i
-        state["offset"] = offset + limit
+        state["offset"] = offset + fetch_limit
         result = state["all_scored_papers"]
 
     return jsonify({

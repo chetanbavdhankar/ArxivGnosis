@@ -1,0 +1,28 @@
+# 1. The "One-Liner" Hook
+Glance revolutionizes galactic archaeology by providing an automated pipeline that integrates state-of-the-art techniques to reveal intricate stellar disk structures, challenging the universality of exponential models in galaxy morphology.
+
+# 2. The Core Problem
+In extragalactic astronomy, understanding the formation and evolutionary histories of galaxies is crucial but complicated due to their multifaceted structural components with distinct physical and dynamical properties. Traditional methods often struggle to disentangle these individual contributions, leading to oversimplified or inaccurate models of galaxy structure.
+
+# 3. The Solution / Innovation
+Glance offers a comprehensive framework for chronochemical and dynamical analysis through an integrated pipeline called "Galactic archaeoLogy via chronochemicAl & dyNamiCal modElling" (GLANCE). This innovation automates multiple advanced techniques, enabling researchers to extract valuable information on stellar populations, kinematics, dynamics, and gas properties from integral-field spectroscopy data with unprecedented efficiency.
+
+# 4. How It Works (Simplified)
+1. **Data Collection**: Glance starts by collecting high-resolution integral-field spectroscopy data using tools like MUSE.
+2. **Automated Analysis**: The pipeline then processes this data through several steps, including Galactic extinction correction, de-redshifting, Voronoi binning, and nebular continuum correction to prepare it for analysis.
+3. **Integration of Techniques**: It integrates multiple state-of-the-art techniques such as stellar population synthesis (Fado and Starlight), kinematic extraction (pPXF and Bayes-LOSVD), and dynamical modelling (Dynamite) into a streamlined workflow.
+
+# 5. Key Results & Impact
+When applied to MUSE data of NGC 1566, Glance revealed that its stellar disk significantly deviates from the conventional exponential model, challenging the assumption of universal disk morphology in galaxies. This finding not only advances our understanding of galaxy formation and evolution but also opens new avenues for refining models and theories.
+
+# 6. Analogies & Visual Ideas
+- **Analogy**: Imagine Glance as a sophisticated detective kit that can analyze a crime scene (galaxy) with multiple specialized tools, revealing details that traditional methods might miss.
+- **Visual Concept**: A dynamic animation showing how data from various instruments is processed through different stages of analysis in the pipeline, finally revealing the intricate structure of the galaxy's stellar disk.
+
+# 7. Technical Keywords
+1. **Integral-field spectroscopy** - A technique that provides spatially resolved spectroscopic information over an entire region.
+2. **Galactic extinction correction** - Adjusting for dust obscuration to get accurate light measurements from stars.
+3. **Dynamical modelling** - Simulating the motion and behavior of stars and gas within a galaxy to understand its structure and history.
+4. **Exponential model** - A simple mathematical representation often used to describe the surface brightness profile of galactic disks.
+
+By understanding these concepts, content creators can craft engaging narratives that highlight the importance and impact of Glance in advancing our knowledge of galaxies.
