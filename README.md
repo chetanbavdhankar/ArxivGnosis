@@ -129,7 +129,7 @@ ArxivGnosis ships with a full interactive web interface.
 ```bash
 python server.py
 ```
-Then open **http://localhost:5000** in your browser.
+The browser will open **http://localhost:5001** automatically.
 
 ### Architecture
 - **`server.py`** — Flask API wrapping existing modules into REST endpoints (`/api/fetch`, `/api/process`, `/api/reset`)

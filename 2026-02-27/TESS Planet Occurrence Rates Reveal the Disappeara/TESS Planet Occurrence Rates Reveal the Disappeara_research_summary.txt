@@ -1,0 +1,27 @@
+# 1. The "One-Liner" Hook
+This research reveals a surprising absence of sub-Neptunes around low-mass stars, challenging our understanding of planetary formation and supporting the idea that small, rocky worlds are more common than previously thought.
+
+# 2. The Core Problem
+The traditional view in exoplanet science posited a "Radius Valley" phenomenon where sub-Neptune-sized planets were scarce around M dwarfs (mid-to-late type stars). This research aimed to resolve this discrepancy by conducting a systematic survey of such stars, using data from the Transiting Exoplanet Survey Satellite (TESS), and analyzing their planetary companions.
+
+# 3. The Solution / Innovation
+The study presents an innovative approach that combines a custom-built pipeline for planet detection with in-depth statistical analysis to measure the occurrence rates of planets around M dwarfs. This method allowed researchers to achieve unprecedented precision and depth in identifying transiting planets, providing a clearer picture of planetary demographics around these stars.
+
+# 4. How It Works (Simplified)
+1. **Data Collection**: The TESS satellite observed over 8,000 mid-to-late M dwarfs, collecting extensive data on potential transit signals.
+2. **Pipeline Development**: A specialized pipeline was developed to process this vast dataset, enhancing the detection of subtle planetary signals and reducing false positives.
+3. **Analysis and Modeling**: Statistical methods were applied to characterize the planet population, including the occurrence rates as a function of orbital period, instellation, and radius.
+
+# 5. Key Results & Impact
+The study found that mid-to-late M dwarfs host significantly more planets than previously thought, particularly small, rocky worlds (super-Earths) with radii around 1.25 Earth radii. Importantly, it revealed a unimodal distribution of planet radii, indicating the disappearance of the "Radius Valley" observed in higher mass stars like FGK dwarfs and early M dwarfs. This finding supports theories suggesting that water-rich pebble accretion models predict fewer sub-Neptunes around lower-mass stars. The absence of hot Jupiters within 10 days also sets new constraints on the architecture of planetary systems around these stars.
+
+# 6. Analogies & Visual Ideas
+- **Analogy**: Imagine a river with rapids and smooth stretches; the "Radius Valley" is like a stretch where rocks (sub-Neptune-sized planets) are rare. This research shows that in smaller rivers (low-mass M dwarfs), there are no such gaps—only rocky shores.
+- **Visual Concept**: A graphic could show a comparison between the planet distributions around FGK and early M dwarfs, with clear "valleys" of sub-Neptune planets, versus the unimodal distribution observed in mid-to-late M dwarfs, illustrated as a smooth curve without the gap.
+
+# 7. Technical Keywords
+1. **TESS**: Transiting Exoplanet Survey Satellite, used for observing exoplanets.
+2. **Injection-Recovery**: A method where researchers introduce known planets into their data to test the effectiveness of detection pipelines.
+3. **Cumulative Occurrence Rate**: The total number of planets per star within a given radius and orbital period range.
+4. **Radius Valley**: A phenomenon observed in FGK and early M dwarf systems, where sub-Neptune-sized planets are scarce.
+5. **Pebble Accretion Models**: Theoretical models explaining how small planetary bodies grow into larger ones during the formation process.

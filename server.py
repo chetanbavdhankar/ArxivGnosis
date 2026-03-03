@@ -7,6 +7,7 @@ import sys
 import json
 import logging
 import threading
+import webbrowser
 from datetime import datetime, timezone
 from queue import Queue
 
@@ -206,6 +207,9 @@ def api_reset():
 
 
 if __name__ == '__main__':
-    port = int(os.environ.get("PORT", 5000))
-    print(f"\n  ArxivGnosis Web UI -> http://localhost:{port}\n")
-    app.run(host='0.0.0.0', port=port, debug=True)
+    port = int(os.environ.get("PORT", 5001))
+    url = f"http://localhost:{port}"
+    print(f"\n  ArxivGnosis Web UI -> {url}\n")
+    # Auto-open browser after a short delay to let Flask bind the port
+    threading.Timer(1.25, webbrowser.open, args=[url]).start()
+    app.run(host='0.0.0.0', port=port, debug=True, use_reloader=False)
